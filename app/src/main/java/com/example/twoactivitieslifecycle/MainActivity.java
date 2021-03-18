@@ -3,139 +3,82 @@ package com.example.twoactivitieslifecycle;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
-    private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    public static final String EXTRA_MESSAGE
-            = "com.example.twoactivitieslifecycle.extra.MESSAGE";
-    public static final int TEXT_REQUEST = 1;
+    public static final int ITEM_REQUEST = 1;
+    private final TextView[] item = new TextView[10];
+    private ArrayList<String> itemsList = new ArrayList<>(10);
 
-    private EditText mMessageEditText;
-    private TextView mReplyHeadTextView;
-    private TextView mReplyTextView;
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(LOG_TAG, "onStart");
-    }
-
-    /**
-     * Maintains the Activity state across configuration changes.
-     *
-     * @param outState Activity state data to save
-     */
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mReplyHeadTextView.getVisibility() == View.VISIBLE) {
-            outState.putBoolean("reply_visible", true);
-            outState.putString("reply_text", mReplyTextView.getText().toString());
-        }
-    }
-
-    /**
-     * Initializes the activity.
-     *
-     * @param savedInstanceState The current state data
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Log.d(LOG_TAG, "-------");
-        Log.d(LOG_TAG, "onCreate");
-
-        mMessageEditText = findViewById(R.id.editText_main);
-        mReplyHeadTextView = findViewById(R.id.text_header_reply);
-        mReplyTextView = findViewById(R.id.text_message_reply);
+        item[0] = findViewById(R.id.item1);
+        item[1] = findViewById(R.id.item2);
+        item[2] = findViewById(R.id.item3);
+        item[3] = findViewById(R.id.item4);
+        item[4] = findViewById(R.id.item5);
+        item[5] = findViewById(R.id.item6);
+        item[6] = findViewById(R.id.item7);
+        item[7] = findViewById(R.id.item8);
+        item[8] = findViewById(R.id.item9);
+        item[9] = findViewById(R.id.item10);
 
         if (savedInstanceState != null) {
-            boolean isVisible = savedInstanceState
-                    .getBoolean("reply_visible");
-            if (isVisible) {
-                mReplyHeadTextView.setVisibility(View.VISIBLE);
-                mReplyTextView.setText(savedInstanceState
-                        .getString("reply_text"));
-                mReplyTextView.setVisibility(View.VISIBLE);
+            itemsList = savedInstanceState.getStringArrayList("ItemsListStringArray");
+            int i;
+            if (itemsList != null && itemsList.size() > 0) {
+                for (i = 0; i < itemsList.size(); i++) {
+                    if (itemsList.size() > 10) {
+                        Toast.makeText(MainActivity.this, "Cannot add more items to the list", Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    item[i].setVisibility(View.VISIBLE);
+                    item[i].setText(itemsList.get(i));
+                }
             }
         }
     }
 
-    /**
-     * Handles the onClick for the "Send" button. Gets the value of the main
-     * EditText, creates an intent, and launches the second activity with
-     * that intent.
-     *
-     * The return intent from the second activity is onActivityResult().
-     *
-     * @param view The view (Button) that was clicked.
-     */
-    public void launchSecondActivity(View view) {
-        Log.d(LOG_TAG, "Button clicked!");
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (itemsList.size() != 0) {
+            outState.putStringArrayList("ItemsListStringArray", itemsList);
+        }
+    }
+
+    public void addItem(View view) {
         Intent intent = new Intent(this, SecondActivity.class);
-        String message = mMessageEditText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivityForResult(intent, TEXT_REQUEST);
+        startActivityForResult(intent, ITEM_REQUEST);
     }
 
-    /**
-     * Handles the data in the return intent from SecondActivity.
-     *
-     * @param requestCode Code for the SecondActivity request.
-     * @param resultCode Code that comes back from SecondActivity.
-     * @param data Intent data sent back from SecondActivity.
-     */
+    // method for when SecondActivity returns intent
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == TEXT_REQUEST) {
+        if (requestCode == ITEM_REQUEST) {
             if (resultCode == RESULT_OK) {
-                String reply = data.getStringExtra(SecondActivity.EXTRA_REPLY);
+                String itemString = data.getStringExtra(SecondActivity.EXTRA_ITEMS);
+                itemsList.add(itemString);
+                int i;
+                for (i = 0; i < itemsList.size(); i++) {
+                    if (itemsList.size() > 10) {
+                        Toast.makeText(MainActivity.this, "Cannot add more items to the list", Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    item[i].setVisibility(View.VISIBLE);
+                    item[i].setText(itemsList.get(i));
+                }
 
-                mReplyHeadTextView.setVisibility(View.VISIBLE);
-
-                mReplyTextView.setText(reply);
-                mReplyTextView.setVisibility(View.VISIBLE);
             }
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d(LOG_TAG, "onPause");
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d(LOG_TAG, "onRestart");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(LOG_TAG, "onResume");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(LOG_TAG, "onStop");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(LOG_TAG, "onDestroy");
     }
 }
 

@@ -1,93 +1,59 @@
 package com.example.twoactivitieslifecycle;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
-
+import android.widget.Toast;
 
 public class SecondActivity extends AppCompatActivity {
-    private static final String LOG_TAG
-            = SecondActivity.class.getSimpleName();
-    public static final String EXTRA_REPLY =
-            "com.example.twoactivitieslifecycle.extra.REPLY";
+    public static final String EXTRA_ITEMS = "com.example.twoactivitieslifecycle.extra.ITEMS";
 
-    private EditText mReply;
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(LOG_TAG, "onStart");
-    }
-
-    /**
-     * Initializes the activity.
-     *
-     * @param savedInstanceState The current state data.
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
-
-        mReply = findViewById(R.id.editText_second);
-
-        Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-
-        TextView textView = findViewById(R.id.text_message);
-        textView.setText(message);
+//        Intent intent = getIntent();
     }
 
-    /**
-     * Handles the onClick for the "Reply" button. Gets the message from the
-     * second EditText, creates an intent, and returns that message back to
-     * the main activity.
-     *
-     * @param view The view (Button) that was clicked.
-     */
-    public void returnReply(View view) {
-        String reply = mReply.getText().toString();
+    public void selectItem(View view) {
+        Intent return_items_intent = new Intent();
 
+        switch (view.getId()){
+            case R.id.button_Chocolate:
+                return_items_intent.putExtra(EXTRA_ITEMS, "Chocolate"); setResult(RESULT_OK, return_items_intent); finish();
+                break;
+            case R.id.button_oil:
+                return_items_intent.putExtra(EXTRA_ITEMS, "Oil"); setResult(RESULT_OK, return_items_intent); finish();
+                break;
+            case R.id.button_milk:
+                return_items_intent.putExtra(EXTRA_ITEMS, "Milk"); setResult(RESULT_OK, return_items_intent); finish();
+                break;
+            case R.id.button_eggs:
+                return_items_intent.putExtra(EXTRA_ITEMS, "Eggs"); setResult(RESULT_OK, return_items_intent); finish();
+                break;
+            case R.id.button_cheese:
+                return_items_intent.putExtra(EXTRA_ITEMS, "Cheese"); setResult(RESULT_OK, return_items_intent); finish();
+                break;
+            case R.id.button_rice:
+                return_items_intent.putExtra(EXTRA_ITEMS, "Rice"); setResult(RESULT_OK, return_items_intent); finish();
+                break;
+            case R.id.button_wheat:
+                return_items_intent.putExtra(EXTRA_ITEMS, "Wheat Flour"); setResult(RESULT_OK, return_items_intent); finish();
+                break;
+            case R.id.button_bread:
+                return_items_intent.putExtra(EXTRA_ITEMS, "Bread"); setResult(RESULT_OK, return_items_intent); finish();
+                break;
+            case R.id.button_sugar:
+                return_items_intent.putExtra(EXTRA_ITEMS, "Sugar"); setResult(RESULT_OK, return_items_intent); finish();
+                break;
+            case R.id.button_salt:
+                return_items_intent.putExtra(EXTRA_ITEMS, "Salt"); setResult(RESULT_OK, return_items_intent); finish();
+                break;
+            default:
+                Toast.makeText(SecondActivity.this, "There was an error", Toast.LENGTH_LONG).show();
+                break;
+        }
 
-        Intent replyIntent = new Intent();
-        replyIntent.putExtra(EXTRA_REPLY, reply);
-        setResult(RESULT_OK, replyIntent);
-        Log.d(LOG_TAG, "End SecondActivity");
-        finish();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d(LOG_TAG, "onPause");
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d(LOG_TAG, "onRestart");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(LOG_TAG, "onResume");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(LOG_TAG, "onStop");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(LOG_TAG, "onDestroy");
     }
 }
-
